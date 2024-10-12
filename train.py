@@ -20,7 +20,7 @@ gym_env = ss.concat_vec_envs_v1(gym_env, 1, base_class='stable_baselines3')
 
 # Initialiser les modèles DQN pour chaque agent
 num_agents = gym_env.num_envs  # Récupérer le nombre d'agents à partir de l'environnement
-models = [DQN(  
+models_archer = [DQN(  
                 'MlpPolicy', 
                 gym_env, 
                 verbose=0,
@@ -31,11 +31,31 @@ models = [DQN(
                 train_freq=1,
                 gradient_steps=1,
                 target_update_interval=100,
-                exploration_fraction=0.1,
-                exploration_final_eps=0.02,
+                exploration_fraction=0.3,
+                exploration_initial_eps=0.5,
+                exploration_final_eps=0.03,
                 gamma=0.99,
 
-            ) for _ in range(num_agents)]
+            ) for _ in range(2)]
+
+models_knight = [DQN(  
+                'MlpPolicy', 
+                gym_env, 
+                verbose=0,
+                learning_rate=0.001,
+                buffer_size=1000,
+                batch_size=32,
+                learning_starts=200,
+                train_freq=1,
+                gradient_steps=1,
+                target_update_interval=100,
+                exploration_fraction=0.3,
+                exploration_initial_eps=0.5,
+                exploration_final_eps=0.03,
+                gamma=0.99
+            ) for _ in range(2)]
+
+models = models_archer + models_knight
 
 # Entraîner les agents
 timesteps = 10_000
