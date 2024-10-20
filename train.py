@@ -4,7 +4,7 @@ import supersuit as ss
 from stable_baselines3 import DQN
 import numpy as np
 import matplotlib.pyplot as plt
-
+import time 
 # Charger l'environnement PettingZoo AEC (par défaut)
 aec_env = knights_archers_zombies_v10.env()
 
@@ -25,16 +25,16 @@ models_archer = [DQN(
                 gym_env, 
                 verbose=0,
                 learning_rate=0.001,
-                buffer_size=1000,
-                batch_size=32,
+                buffer_size=10000,
+                batch_size=64,
                 learning_starts=200,
                 train_freq=1,
                 gradient_steps=1,
                 target_update_interval=100,
                 exploration_fraction=0.3,
-                exploration_initial_eps=0.5,
+                exploration_initial_eps=0.05,
                 exploration_final_eps=0.03,
-                gamma=0.99,
+                gamma=0.96
 
             ) for _ in range(2)]
 
@@ -43,24 +43,32 @@ models_knight = [DQN(
                 gym_env, 
                 verbose=0,
                 learning_rate=0.001,
-                buffer_size=1000,
-                batch_size=32,
+                buffer_size=10000,
+                batch_size=64,
                 learning_starts=200,
                 train_freq=1,
                 gradient_steps=1,
                 target_update_interval=100,
                 exploration_fraction=0.3,
-                exploration_initial_eps=0.5,
+                exploration_initial_eps=0.05,
                 exploration_final_eps=0.03,
-                gamma=0.99
+                gamma=0.96
             ) for _ in range(2)]
 
 models = models_archer + models_knight
 
+### TODO TRAIN AGENT INDENPENDENTLY FIRST THEN TRAIN THEM TOGETHER
+
+start_t = time.time()
+
 # Entraîner les agents
 timesteps = 10_000
-for episode in range(10):  # Nombre d'épisodes d'entraînement
-    print(f"Episode {episode + 1}")
+nb_episodes = 20
+for episode in range(nb_episodes):  # Nombre d'épisodes d'entraînement
+    t = time.time() - start_t
+    hours, remainder = divmod(t, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    print(f"Episode {episode + 1} - Temps écoulé: {int(hours):02}:{int(minutes):02}:{int(seconds):02} s")
     obs = gym_env.reset()
     done = np.array([False] * num_agents)
 
@@ -78,7 +86,11 @@ for episode in range(10):  # Nombre d'épisodes d'entraînement
             done = np.array([False] * num_agents)
 
     for i in range(num_agents):
-        models[i].learn(total_timesteps=1000)
+        models[i].learn(total_timesteps=100)
+
+    # Sauvegarder les modèles
+    for i in range(num_agents):
+        models[i].save(f"./checkpoints/dqn_agent_{i + 1}_knights_archers_zombies_{episode}")
 
 # Sauvegarder les modèles
 for i in range(num_agents):
