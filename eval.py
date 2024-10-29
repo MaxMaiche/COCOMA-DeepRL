@@ -25,7 +25,7 @@ num_agents = gym_env.num_envs  # Récupérer le nombre d'agents à partir de l'e
 models = []
 # load the models
 for i in range(num_agents):
-    models.append(DQN.load(f"dqn_agent_{i + 1}_knights_archers_zombies"))
+    models.append(DQN.load(f"ALONE_dqn_agent_{i + 1}_knights_archers_zombies"))
 
 # Évaluer les modèles
 obs = gym_env.reset()

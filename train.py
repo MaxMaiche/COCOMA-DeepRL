@@ -5,6 +5,8 @@ from stable_baselines3 import DQN
 import numpy as np
 import matplotlib.pyplot as plt
 import time 
+
+
 # Charger l'environnement PettingZoo AEC (par défaut)
 aec_env = knights_archers_zombies_v10.env()
 
@@ -59,6 +61,37 @@ models = models_archer + models_knight
 
 ### TODO TRAIN AGENT INDENPENDENTLY FIRST THEN TRAIN THEM TOGETHER
 
+# Train them alone 
+
+start_t = time.time()
+timesteps = 2_000
+for i, agent in enumerate(models):
+    for episode in range(10):
+        t = time.time() - start_t
+        hours, remainder = divmod(t, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        print(f"Episode {episode + 1} - Temps ecoule: {int(hours):02}:{int(minutes):02}:{int(seconds):02} s")
+        obs = gym_env.reset()
+        done = np.array([True] * num_agents)
+        done[i] = False
+
+        for step in range(timesteps):
+            if step % 1000 == 0:
+                print(f"Step {step}/{timesteps}")
+            actions = np.array([models[i].predict(obs[i])[0] for i in range(num_agents)])
+            obs, rewards_batch, done, _ = gym_env.step(actions)  # Appliquer les actions dans l'environnement
+            models[i].learn(total_timesteps=1)  # Mettre à jour chaque agent après chaque étape
+
+            if done.all(): # Si tous les agents sont morts (fin de l'épisode)
+                done = np.array([True] * num_agents)
+                done[i] = False
+
+# Save the models
+for i in range(num_agents):
+    models[i].save(f"ALONE_dqn_agent_{i + 1}_knights_archers_zombies")
+
+exit()
+
 start_t = time.time()
 
 # Entraîner les agents
@@ -68,7 +101,7 @@ for episode in range(nb_episodes):  # Nombre d'épisodes d'entraînement
     t = time.time() - start_t
     hours, remainder = divmod(t, 3600)
     minutes, seconds = divmod(remainder, 60)
-    print(f"Episode {episode + 1} - Temps écoulé: {int(hours):02}:{int(minutes):02}:{int(seconds):02} s")
+    print(f"Episode {episode + 1} - Temps ecoule: {int(hours):02}:{int(minutes):02}:{int(seconds):02} s")
     obs = gym_env.reset()
     done = np.array([False] * num_agents)
 
