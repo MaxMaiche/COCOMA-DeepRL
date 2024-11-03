@@ -25,7 +25,7 @@ num_agents = gym_env.num_envs  # Récupérer le nombre d'agents à partir de l'e
 models = []
 # load the models
 for i in range(num_agents):
-    models.append(DQN.load(f"ALONE_dqn_agent_{i + 1}_knights_archers_zombies"))
+    models.append(DQN.load(f"dqn_agent_{i + 1}_knights_archers_zombies"))
 
 # Évaluer les modèles
 obs = gym_env.reset()
@@ -43,6 +43,7 @@ for _ in range(1000):
         rewards[i].append(rewards_batch[i])  # Stocker les récompenses pour chaque agent
 
     if done.all(): # Si tous les agents sont morts (fin de l'épisode)
+        print("Tous les agents sont morts. Réinitialisation de l'environnement.")
         obs = gym_env.reset()
         done = np.array([False] * num_agents)
 
