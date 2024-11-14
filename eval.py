@@ -58,4 +58,4 @@ plt.show()
 
 
 # Créer une vidéo à partir des frames capturées
-imageio.mimsave("dqn_knights_archers_zombies.mp4", frames, fps=30)
+imageio.mimsave("dqn_knights_archers_zombies_mort.mp4", frames, fps=30)
