@@ -126,8 +126,6 @@ if __name__ == "__main__":
 
 
     """
-    ### TODO TRAIN AGENT INDENPENDENTLY FIRST THEN TRAIN THEM TOGETHER
-
     # Train them alone 
 
     # start_t = time.time()
