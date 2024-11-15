@@ -63,17 +63,24 @@ def plot_data(list_to_plot, labels, title):
 
 
 
-
+folderBasique = "DataPlot/Basique"
 folderAllArchers = "DataPlot/AllArchers"
 folderGlobalReward = "DataPlot/GlobalReward"
 folderArrowPenalty = "DataPlot/ArrowPenalty"
+folderMortPenalty = "DataPlot/MortPenalty"
 
+dataBasique = load_data(folderBasique)
 dataAllArchers = load_data(folderAllArchers)
 dataGlobalReward = load_data(folderGlobalReward)
 dataArrowPenalty = load_data(folderArrowPenalty)
+dataMortPenalty = load_data(folderMortPenalty)
 
+processedDataBasique = process_data(dataBasique)
 processedDataAllArchers = process_data(dataAllArchers)
 processedDataGlobal = process_data(dataGlobalReward)
 processedDataArrowPenalty = process_data(dataArrowPenalty)
+processedDataMortPenalty = process_data(dataMortPenalty)
 
-plot_data([processedDataAllArchers,processedDataGlobal, processedDataArrowPenalty], ["AllArchers", "Reward Global", "Arrow Penalty"], "All Archers vs Reward Global vs Arrow Penalty")
+plot_data([processedDataBasique, processedDataMortPenalty, processedDataGlobal, processedDataAllArchers, processedDataArrowPenalty], 
+          ["Basique","Mort Penalty", "Reward Global", "AllArchers", "Arrow Penalty"], 
+          "comparaison des stratégies")
